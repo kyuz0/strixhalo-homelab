@@ -14,34 +14,19 @@ npm run build        # -> dist/
 - One `.html` page per `.md` wiki page, mirroring the repo layout
   (`Guides/Buyer's_Guide.md` -> `dist/Guides/Buyer's_Guide.html`).
 - `dist/index.html` is the home page (built from the root `README.md`);
-  with `CLEAN_URLS=true` it is linked as the wiki root (`../`, …), otherwise
-  as `index.html`.
+  with `CLEAN_URLS=true`, each non-home page is instead emitted as a directory
+  index (`Guides/Buyer's_Guide/index.html`) and linked with a trailing slash.
 
 ## Serving clean URLs
-With `CLEAN_URLS=true` the pages are still emitted as `key.html`; only the
-*links* lose the `.html` suffix. The webserver therefore needs a rule that
-maps an extension-less path onto the real `.html` file. Example nginx config
-(serve `dist/` as the site root):
-
-```nginx
-server {
-    listen 80;
-    server_name wiki.example.com;
-    root /var/www/wiki/.static/dist;   # <- the build output
-
-    location / {
-        # `$uri` for real files, `$uri/` for directories (index.html),
-        # `$uri.html` for the extension-less page links.
-        try_files $uri $uri.html $uri/ =404;
-    }
-}
-```
+With `CLEAN_URLS=true`, each page is emitted as `key/index.html` and linked as
+`key/`. This is compatible with static hosts, including GitHub Pages, because
+the host serves the directory's `index.html` without a rewrite rule.
 
 ## Link rewriting
 | Source link | Generated |
 | ----------- | --------- |
 | `./img.png` (attachment relative) | `https://raw.githubusercontent.com/{GH_REPO}/repo/path/to/img.png` |
-| `../Other_Page.md` | relative `.html` link (or extension-less with `CLEAN_URLS=true`) |
+| `../Other_Page.md` | relative `.html` link (or directory URL with `CLEAN_URLS=true`) |
 | `https://…` | unchanged |
 | `#anchor` | unchanged |
 | `../Some/Dir/` | relative dir link (trailing `/`) |

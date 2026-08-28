@@ -8,10 +8,10 @@
 // Env (from .static/.env):
 //   GH_REPO  GitHub repo hosting the wiki as `user/repo[/branch]`; raw
 //            attachment and GitHub page links are derived from it
-//   CLEAN_URLS  when 'true', internal *links* are emitted without the
-//            `.html` suffix (files are still written as `key.html` - the
-//            webserver should rewrite extension-less paths onto them).
-//            The wiki entry point is always `index.html`. Default: off.
+//   CLEAN_URLS  when 'true', pages are emitted as `key/index.html` and
+//            internal links point to those directory URLs. This works with
+//            static hosts such as GitHub Pages. The wiki entry point is
+//            always `index.html`. Default: off.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -55,9 +55,8 @@ function loadEnv() {
 
 const ENV = loadEnv();
 
-// When CLEAN_URLS=true every internal page link drops its `.html` suffix
-// (files are still written as `key.html`; the webserver is expected to
-// rewrite the extension-less path onto the .html file).
+// When CLEAN_URLS=true every page is emitted as a directory index and every
+// internal page link uses that directory URL. This needs no rewrite rule.
 const CLEAN_URLS = (ENV.CLEAN_URLS || "").trim().toLowerCase() === "true";
 
 // GH_REPO is the single source of truth for where the wiki lives, e.g.
@@ -321,58 +320,43 @@ function fileExists(repoPath) {
   return !!resolveFile(repoPath);
 }
 
-/** Output file name for a page key (the wiki entry point is index.html). */
+/** Output file name for a page key (the wiki entry point is always index.html). */
 function pageFile(key) {
-  return key === HOME_PAGE ? "index.html" : key + HTML;
+  if (key === HOME_PAGE) return "index.html";
+  return CLEAN_URLS ? path.posix.join(key, "index.html") : key + HTML;
 }
 
 /**
- * Repo-rooted URL used when *linking* to page `key`. In clean-url mode the
- * `.html` suffix is dropped (the server rewrites the path); the entry point
- * collapses to the wiki root (""), served as index.html. In default mode the
- * entry point is linked as a plain `index.html`.
+ * Repo-rooted URL used when *linking* to page `key`. In clean-url mode each
+ * page has a trailing-slash directory URL backed by `key/index.html`; the
+ * entry point collapses to the wiki root. In default mode pages use `.html`
+ * files and the entry point is linked as `index.html`.
  */
 function pageUrl(key) {
   if (key === HOME_PAGE) return CLEAN_URLS ? "" : "index.html";
-  return CLEAN_URLS ? key : key + HTML;
+  return CLEAN_URLS ? key + "/" : key + HTML;
 }
 
 /**
  * Relative href from page `fromKey` to a generated index page `toDir`
- * (a dir key without suffix). The index page lives at `toDir + ".html"`;
- * in clean-url mode the link is the bare directory path (the server
- * rewrites it to the .html file). The base is the *page's* directory (the
- * page is a real file somewhere in the tree, so
- * `dirname(fromKey + ".html")` is its containing dir).
+ * (a dir key without suffix). Directory indexes follow the same output and
+ * link rules as regular pages, so defer to relPageHref.
  */
 function relDirHref(fromKey, toDir) {
-  const fromBase = path.posix.dirname(fromKey + HTML);
-  let rel;
-  if (CLEAN_URLS) {
-    // Bare dir path = its clean URL. When the page lives *inside* the target
-    // dir itself the relative path is empty; the dir's page is then a sibling
-    // one level up (`Hardware/PCs` from within it -> `../PCs`).
-    rel = path.posix.relative(fromBase, toDir);
-    if (!rel) rel = "../" + path.posix.basename(toDir);
-  } else {
-    rel = path.posix.relative(fromBase, toDir + HTML);
-  }
-  if (!rel.startsWith(".")) rel = "./" + rel;
-  return rel;
+  return relPageHref(fromKey, toDir);
 }
 
 /**
  * Relative href from page `from` to page `to` (both keys without suffix).
- * The base is always the containing dir of the *source page file* (for an
- * extension-less clean URL the browser also resolves relative links from
- * that directory, so the two base computations agree). In clean-url mode
- * the target loses its `.html` suffix; in default mode it is
- * `to + ".html"`. The wiki entry point (HOME_PAGE) is always linked as
- * `index.html` in default mode, and as the wiki root in clean-url mode
- * (`../`, `../../`, …), which the server serves as the entry page.
+ * In clean-url mode a source page lives at `from/index.html`, so relative
+ * links resolve from `from/`; otherwise they resolve from the containing
+ * directory of `from.html`. The wiki entry point is linked as `index.html`
+ * in default mode and as the wiki root in clean-url mode.
  */
 function relPageHref(from, to) {
-  const fromBase = path.posix.dirname(from + HTML);
+  const fromBase = CLEAN_URLS
+    ? (from === HOME_PAGE ? "." : from)
+    : path.posix.dirname(from + HTML);
   let rel;
   if (to === HOME_PAGE) {
     if (CLEAN_URLS) {
@@ -383,11 +367,11 @@ function relPageHref(from, to) {
     }
   } else {
     rel = path.posix.relative(fromBase, pageUrl(to));
-    // Linking to the page that *represents* the source page's own directory
-    // (e.g. `Sixunited_AXB35` from `Sixunited_AXB35/Power_Mode_and_Fan_Control`)
-    // yields an empty relative path in clean mode; the target is a sibling
-    // one level up (`../Sixunited_AXB35`).
-    if (!rel && CLEAN_URLS) rel = "../" + path.posix.basename(to);
+    // A link to the current directory index must still be a usable URL.
+    if (!rel && CLEAN_URLS) rel = "./";
+    // path.relative drops a target's trailing slash. Restore it so browsers
+    // request the directory URL that GitHub Pages maps to its index.html.
+    if (CLEAN_URLS && rel !== "./" && !rel.endsWith("/")) rel += "/";
   }
   if (!rel.startsWith(".")) rel = "./" + rel;
   return rel;

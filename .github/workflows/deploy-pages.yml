@@ -32,7 +32,7 @@ jobs:
         env:
           GH_REPO: ${{ github.repository }}
         run: |
-          printf 'GH_REPO=%s\nCLEAN_URLS=false\n' "$GH_REPO" > .static/.env
+          printf 'GH_REPO=%s\nCLEAN_URLS=true\n' "$GH_REPO" > .static/.env
 
       - name: Build static site
         working-directory: .static
