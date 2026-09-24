@@ -8,7 +8,7 @@ Yet another mini PC based on the [Sixunited's AXB35 board](../Boards/Sixunited_A
 
 Availability: since July 2025.
 
-Price: $2999 / 2606€ for the 128GB version, $2399 / 2084€ for the 96GB RAM version. In the EU, VAT is included in the price. The PC comes with Windows 11 Pro preinstalled on the 2TB SSD.
+Price: $3099 / 2712€ for the 128GB version, $2399 / 2099€ for the 96GB RAM version. In the EU, VAT is included in the price. The PC comes with Windows 11 Pro preinstalled on the 2TB SSD.
 
 As of July 2026, EU orders are shipped from Germany, UK orders are shipped from the UK and US orders are shipped from the US. All other orders are shipped from China.
 
