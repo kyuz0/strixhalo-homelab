@@ -8,7 +8,7 @@ Yet another mini PC based on the [Sixunited's AXB35 board](../Boards/Sixunited_A
 
 Availability: since July 2025.
 
-Price: $2999 / 2606€ for the 128GB version, $2399 / 2084€ for the 96GB RAM version. In the EU, VAT is included in the price. The PC comes with Windows 11 Pro preinstalled on the 2TB SSD.
+Price: $3099 / 2712€ for the 128GB version, $2399 / 2099€ for the 96GB RAM version. In the EU, VAT is included in the price. The PC comes with Windows 11 Pro preinstalled on the 2TB SSD.
 
 As of July 2026, EU orders are shipped from Germany, UK orders are shipped from the UK and US orders are shipped from the US. All other orders are shipped from China.
 
@@ -979,6 +979,18 @@ Here are some hopefully useful outputs created on Bosgame M5 with Linux kernel 6
 >|        configuration: broadcast=yes driver=thunderbolt-net driverversion=6.18.3-200.fc43.x86_64 ip=[REMOVED] multicast=yes
 >| ```
 
+### Price history in Germany
+ - Summer 2025 1725€ (1450€ + VAT)
+ - October 21 2025 1580€
+ - December 19 2025 1718€
+ - February 14 2026 1770€
+ - February 25 2026 1860€
+ - March 6 2026 2066€
+ - April 11 2026 2217€
+ - May 9 2026 2382€
+ - July 21 2026 2537€
+ - August 8 2026 2606€
+ - September 24 2026 2712€
 ### Relevant Pages
  - [Sixunited_AXB35](../Boards/Sixunited_AXB35.md)
  - [Firmware](../Boards/Sixunited_AXB35/Firmware.md)
