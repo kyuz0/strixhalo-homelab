@@ -18,7 +18,7 @@ YuE2 needs at least 32 GB of VGM; 48 GB is recommended. The installer checks the
 
 ## Install
 
-1. Download `OneClickLocalAI-Setup-0.8.0-public.exe` (free): https://github.com/HiImHal/one-click-local-ai/releases/latest
+1. Download `OneClickLocalAI-Setup-0.8.0-public.exe` (free) from https://www.hiimhal.com or directly from GitHub: https://github.com/HiImHal/one-click-local-ai/releases/latest
    Optionally verify it in PowerShell with `Get-FileHash .\OneClickLocalAI-Setup-0.8.0-public.exe`. Expected SHA-256: `d21d83c456fbd4fe2fe0459e9d6c9c2680a3bc277b07eb12609c8b2f56a87c5d`
 2. Run it.
 3. Open **One Click Local AI** from your Desktop.
@@ -46,5 +46,5 @@ YuE2 code and model weights are **CC BY-NC 4.0** (non-commercial use only) by th
 
 ## Links
 
-- Installer and documentation: https://github.com/HiImHal/one-click-local-ai
-- Developer: https://www.hiimhal.com
+- Developer and download: https://www.hiimhal.com
+- Installer and documentation on GitHub: https://github.com/HiImHal/one-click-local-ai
