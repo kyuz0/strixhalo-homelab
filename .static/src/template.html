@@ -247,18 +247,30 @@
     }
     .toc-list { padding: 1rem 1rem 1.5rem; font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.125rem; }
 
-    /* ---- tables: allow wrapping of long words/URLs ---- */
-    #content table {
+    /* ---- tables ----
+       Do NOT use `overflow-wrap: anywhere` here: it makes every character a
+       break opportunity for min-content sizing, so auto table layout squeezes
+       short columns ("Version") down to a few letters and splits words
+       mid-letter. `break-word` only breaks words that cannot fit at all.
+       Tables live in a scroll container (see build.mjs) so a table that is
+       wider than the column scrolls instead of getting crushed. */
+    #content .table-wrap {
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    #content .table-wrap > table {
+      width: 100%;
+      margin: 0;
       table-layout: auto;
-      min-width: 0;
     }
     #content table th,
     #content table td {
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
       word-break: normal;
+      vertical-align: top;
     }
     #content a {
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
       word-break: normal;
     }
     .toc-list a {

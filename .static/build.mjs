@@ -441,6 +441,42 @@ function makeMd(ctx) {
   const md = new MarkdownIt({ html: true, linkify: true });
   md.use(anchor, { slugify });
   md.use(githubAlerts);
+  // Wrap tables in a scroll container so wide tables scroll instead of
+  // squeezing their columns (styled via `.table-wrap` in template.html).
+  md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n';
+  md.renderer.rules.table_close = () => "</table></div>\n";
+  // Long link text inside tables (e.g. firmware filenames) has no spaces, so
+  // offer soft break points after `_ - . /` to let it wrap at sane places.
+  md.core.ruler.push("table_link_wbr", (state) => {
+    let inTable = false;
+    for (const block of state.tokens) {
+      if (block.type === "table_open") inTable = true;
+      else if (block.type === "table_close") inTable = false;
+      else if (inTable && block.type === "inline" && block.children) {
+        let inLink = false;
+        const children = [];
+        for (const tok of block.children) {
+          if (tok.type === "link_open") inLink = true;
+          else if (tok.type === "link_close") inLink = false;
+          if (!(inLink && tok.type === "text")) {
+            children.push(tok);
+            continue;
+          }
+          tok.content.split(/(?<=[_\-./])/).forEach((part, i) => {
+            if (i > 0) {
+              const wbr = new state.Token("html_inline", "", 0);
+              wbr.content = "<wbr>";
+              children.push(wbr);
+            }
+            const text = new state.Token("text", "", 0);
+            text.content = part;
+            children.push(text);
+          });
+        }
+        block.children = children;
+      }
+    }
+  });
   md.renderer.rules.link_open = (tokens, idx, opts, env, self) => {
     const href = tokens[idx].attrGet("href");
     if (!href) return self.renderToken(tokens, idx, opts);

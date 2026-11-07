@@ -19,11 +19,9 @@ Make sure to also check [the Strix Halo Toolboxes project](https://strix-halo-to
 
 Hope it helps :)
 
-\- deseven
 
 ### Get involved
 - [Join our Discord server](https://discord.gg/pnPRyucNrG) for real-time discussions
-- [Contact me](https://d7.wtf/contact) directly
-- [Report issues or suggest improvements](https://github.com/deseven/strixhalo-homelab/issues/new) on GitHub
+- [Report issues or suggest improvements](https://github.com/kyuz0/strixhalo-homelab/issues/new) on GitHub
 
 [![Join Strix Halo HomeLab Discord server](./README/join-us-discord.png)](https://discord.gg/pnPRyucNrG)
