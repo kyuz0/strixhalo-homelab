@@ -30,7 +30,7 @@ A debug mode can be toggled by pressing **ALT+F5**, saving changes and rebooting
 ### Firmware Versions
 
 > [!NOTE]
-> If you happen to have BIOS or EC firmware versions not presented on this page and would like to share, please **[contact me directly](https://d7.wtf/contact)** or **[join our Discord](https://discord.gg/pnPRyucNrG)**
+> If you happen to have BIOS or EC firmware versions not presented on this page and would like to share, please **[make a PR in the repo](https://github.com/kyuz0/strixhalo-homelab)** or **[report it in our Discord](https://discord.gg/pnPRyucNrG)**
 
 Firmware marked with ✅ is proven to be stable and could be recommended for using.
 
@@ -40,6 +40,7 @@ Firmware marked with ✅ is proven to be stable and could be recommended for usi
 >|
 >|| Version  | Official Changelog | Notes | Download |
 >|| -------- | ------------------ | ----- | -------- |
+>|| **1.10 20261104** | N/A | Got from Bosgame support, changelog unknown as usual. | [AXB35-02_BOSGAME_SW1.10_PCBV2.0X_20261104.zip](./Firmware/AXB35-02_BOSGAME_SW1.10_PCBV2.0X_20261104.zip) |
 >|| **1.09 20260508** | N/A | Got from Bosgame support, `PCBV2.0X` mentioned in the filename doesn't seem to be important, the BIOS works even on the earliest revisions of the board. | [AXB35-02_BOSGAME_SW1.09_PCBV2.0X_20260508.zip](./Firmware/AXB35-02_BOSGAME_SW1.09_PCBV2.0X_20260508.zip) |
 >|| **1.07 20250912** | N/A | This BIOS was dumped from a unit bought in October 2025. | [AXB35-02_BOSGAME_SW1.07_20250912.rom](./Firmware/AXB35-02_BOSGAME_SW1.07_20250912.rom) |
 >|
