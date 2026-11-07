@@ -94,9 +94,9 @@
     main { overflow-y: auto; min-width: 0; }
 
     .content-wrap {
-      /* Slightly wider than classic 65ch so tables and code get breathing
-         room, now that the nav rails are slimmer. */
-      max-width: 78ch;
+      /* Much wider than the classic 65ch: the wiki is full of tables and
+         command output, and full-HD screens have lots of spare room. */
+      max-width: 100ch;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 3.5rem;
     }
@@ -187,6 +187,9 @@
     }
 
     /* ---- content prose ---- */
+    /* Web Awesome's .wa-prose caps itself at 65ch; the column width is
+       controlled by .content-wrap instead. */
+    #content.wa-prose { max-width: none; }
     #content h1, #content h2, #content h3, #content h4, #content h5, #content h6 {
       scroll-margin-top: 1.5rem;
     }
@@ -246,6 +249,68 @@
       border-bottom: 1px solid var(--wa-color-surface-border);
     }
     .toc-list { padding: 1rem 1rem 1.5rem; font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.125rem; }
+
+    /* ---- code block copy button (added by site.js) ---- */
+    #content .code-wrap {
+      position: relative;
+      margin-block: 1rem;
+    }
+    #content .code-wrap > pre { margin: 0; overflow-x: auto; }
+    #content .copy-btn {
+      position: absolute;
+      top: 0.5rem; right: 0.5rem;
+      padding: 0.2rem 0.6rem;
+      font: inherit; font-size: 0.75rem; font-weight: 600;
+      color: var(--wa-color-text-quiet);
+      background: var(--wa-color-surface-raised);
+      border: 1px solid var(--wa-color-surface-border);
+      border-radius: 0.375rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    #content .code-wrap:hover .copy-btn,
+    #content .copy-btn:focus-visible,
+    #content .copy-btn.copied { opacity: 1; }
+    #content .copy-btn:hover { color: var(--wa-color-text-normal); }
+    #content .copy-btn.copied { color: var(--wa-color-text-link); }
+    /* No hover on touch screens: keep the button visible. */
+    @media (hover: none) {
+      #content .copy-btn { opacity: 1; }
+    }
+
+    /* ---- expandable blocks (<details>) ---- */
+    #content details {
+      margin: 1rem 0;
+      border: 1px solid var(--wa-color-surface-border);
+      border-radius: 0.5rem;
+      background: color-mix(in srgb, var(--wa-color-surface-lowered) 35%, transparent);
+    }
+    #content details > summary {
+      cursor: pointer;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      display: flex; align-items: center; gap: 0.5rem;
+      user-select: none;
+    }
+    #content details > summary:hover { color: var(--wa-color-text-link); }
+    #content details[open] > summary {
+      border-bottom: 1px solid var(--wa-color-surface-border);
+    }
+    /* A markdown heading/paragraph inside <summary> must not add its own
+       block spacing or size. */
+    #content details > summary > :is(h1, h2, h3, h4, h5, h6, p) {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+      font-weight: inherit;
+      border: 0;
+    }
+    #content details > :not(summary) { margin-inline: 1rem; }
+    #content details > pre { overflow-x: auto; }
+    #content details > :nth-child(2) { margin-top: 1rem; }
+    #content details > :last-child { margin-bottom: 1rem; }
 
     /* ---- tables ----
        Do NOT use `overflow-wrap: anywhere` here: it makes every character a

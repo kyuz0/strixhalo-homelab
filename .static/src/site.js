@@ -149,6 +149,77 @@
   if (tree) wireRowClicks(tree);
   if (mobileTree) wireRowClicks(mobileTree);
 
+  // ---- copy buttons on code blocks (block-level <pre>, not inline code) ----
+  const copyText = async (text) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    // Fallback for insecure contexts (e.g. file:// or plain http).
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      if (!document.execCommand("copy")) throw new Error("copy failed");
+    } finally {
+      ta.remove();
+    }
+  };
+  document.querySelectorAll("#content pre").forEach((pre) => {
+    const wrap = document.createElement("div");
+    wrap.className = "code-wrap";
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+    btn.setAttribute("aria-label", "Copy code to clipboard");
+    let timer;
+    btn.addEventListener("click", async () => {
+      const code = pre.querySelector("code") || pre;
+      // Drop the trailing newline markdown adds after the last line.
+      const text = code.textContent.replace(/\n$/, "");
+      clearTimeout(timer);
+      try {
+        await copyText(text);
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+      } catch {
+        btn.textContent = "Failed";
+      }
+      timer = setTimeout(() => {
+        btn.textContent = "Copy";
+        btn.classList.remove("copied");
+      }, 1500);
+    });
+    wrap.appendChild(btn);
+  });
+
+  // ---- expandable blocks: open the one containing the #hash target ----
+  // Headings live inside <summary>, so they stay visible, but anchors to
+  // elements inside a collapsed <details> need it opened first.
+  const openForHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    let changed = false;
+    for (let d = target.closest("details"); d; d = d.parentElement?.closest("details")) {
+      if (!d.open) {
+        d.open = true;
+        changed = true;
+      }
+    }
+    if (changed) target.scrollIntoView();
+  };
+  window.addEventListener("hashchange", openForHash);
+  openForHash();
+
   // ---- toc scrollspy ----
   // Handles both the desktop rail (#toc) and the mobile TOC drawer
   // (#toc-mobile); they share the same hrefs so one observer drives both.
